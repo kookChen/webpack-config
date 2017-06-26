@@ -1,0 +1,101 @@
+@charset "UTF-8";
+/*!
+ * @ Author CBH (cbhfcly@qq.com)
+ * @ Date   2017-05-09
+**/
+
+.min690 {
+    min-height: 690px;
+    background: #fff;
+}
+
+.type-block {
+    position: relative;
+    width: 100%;
+    height: 98px;
+    border: 1px solid #ddd;
+}
+
+/* 左边图标 */
+.type-left {
+    position: absolute;
+    top: -1px;
+    left: -1px;
+    float: left;
+    width: 100px;
+    height: 100px;
+    line-height: 100px;
+    text-align: center;
+    background: #71CCBA;
+    color: #fff;
+}
+
+/* 右边 */
+.type-right {
+    margin-left: 100px;
+    padding: 24px 0 0 20px;
+}
+
+/* 中间 */
+.type-info {
+    float: left;
+    min-width: 850px;
+}
+.type-info p {
+    height: 24px;
+    line-height: 24px;
+    color: #333;
+}
+.type-info p strong {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+/* 创建按钮 */
+.type-btn {
+    padding-right: 20px;
+    float: right;
+}
+.type-btn button {
+    margin-top: 8px;
+}
+
+
+/* 弹出框样式 */
+.popup-text {
+    /* margin-bottom: 0; */
+}
+.popTips {
+    margin: 0 auto;
+    width: 260px;
+    height: auto;
+}
+.popTips p {
+    padding: 0 0 30px 0;
+    line-height: 24px;
+}
+/* 按钮 */
+.popTipsBtn {
+    text-align: center;
+    overflow: hidden;
+}
+.popTipsBtn a {
+    display: inline-block;
+    width: 64px;
+    height: 28px;
+    line-height: 28px;
+    font-size: 13px;
+    color: #666;
+    border-radius: 2px;
+    border: 1px solid #cccccc;
+}
+.popTipsBtn a:hover {
+    text-decoration: none;
+}
+/* 确定按钮 */
+.popTipsBtn a.ok {
+    margin-right: 15px;
+    color: #fff;
+    background: #f7a54a;
+    border-color: #f7a54a;
+}
