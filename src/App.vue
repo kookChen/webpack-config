@@ -1,6 +1,6 @@
 <template>
     <div class="index">
-        <h1 class="tc">h1大标题</h1>
+        <h1 class="tc">功能测试页面</h1>
 
         <p class="tc">请把 url-loader 的 limit 值设置为 430000，审查元素下面的图片，查看是否使用了base64</p>
         <div class="pic"></div>
@@ -10,14 +10,18 @@
                 下面的cnode列表是devServer配置后获取的数据输出点，如果没有输出内容，请确认配置是否正确<br>
                 <span>可以尝试把设置代理 proxy下面的changeOrigin设置为false，再npm run dev 看下效果（会请求不到列表数据了）</span>
             </p>
+
             <h3>cnode社区首页topics列表</h3>
+
             <ul class="ul">
                 <li v-for="(item, index) in topicsList" v-if="index < 10">
                     <a :href="'https://cnodejs.org/topic/' + item.id" target="_blank">{{ item.title }}</a>
                     <span> --- 作者： {{ item.author.loginname }}</span>
                 </li>
             </ul>
+
         </div>
+        <!-- end cnode-sec -->
 
     </div>
 </template>
@@ -64,14 +68,15 @@
     body {
         background: #fefefe;
     }
-    h1 {
-        color: #ff0000;
-        color: green;
-    }
     .index {
         width: 100%;
         height: 100%;
         overflow: hidden;
+
+        h1 {
+            color: #ff0000;
+            color: green;
+        }
 
         .tc {
             text-align: center;
@@ -110,6 +115,7 @@
 
                 a {
                     color: green;
+                    text-decoration: none;
                 }
 
                 span {
