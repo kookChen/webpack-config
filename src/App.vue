@@ -2,22 +2,22 @@
     <div class="index">
         <h1 class="tc">h1大标题</h1>
 
-        <p class="tc">
-            1、js没有压缩 OK<br/>
-            2、css没有压缩 OK<br/>
-            3、没有弄file-loader、url-loader OK<br/>
-            4、title没有显示出来 OK<br/>
-            5、ExtractTextPlugin中filename相对的路径是哪个？ OK<br/>
-            6、js、css没有生成sourceMap<br/>
-            7、没有引入iview<br/>
-            8、webpack-dev-server 代理设置 OK<br/>
-            9、main.js的vue里面使用template和components页面不能渲染出来<br/>
-            10、path的join和resolve区别？ OK<br/>
-        </p>
-
+        <p class="tc">请把 url-loader 的 limit 值设置为 430000，审查元素下面的图片，查看是否使用了base64</p>
         <div class="pic"></div>
 
-        <div class="tc">{{ tableList }}</div>
+        <div class="cnode-sec">
+            <p>
+                下面的cnode列表是devServer配置后获取的数据输出点，如果没有输出内容，请确认配置是否正确<br>
+                <span>可以尝试把设置代理 proxy下面的changeOrigin设置为false，再npm run dev 看下效果（会请求不到列表数据了）</span>
+            </p>
+            <h3>cnode社区首页topics列表</h3>
+            <ul class="ul">
+                <li v-for="(item, index) in topicsList" v-if="index < 10">
+                    <a :href="'https://cnodejs.org/topic/' + item.id" target="_blank">{{ item.title }}</a>
+                    <span> --- 作者是： {{ item.author.loginname }}</span>
+                </li>
+            </ul>
+        </div>
 
     </div>
 </template>
@@ -29,7 +29,7 @@
         name: 'App',
         data: function() {
             return {
-                tableList: null
+                topicsList: null
             }
         },
         mounted: function() {
@@ -38,19 +38,13 @@
         methods: {
             init: function() {
                 var that = this;
-                var instance = axios.create();
 
-                instance({
-                    method: 'post',
-                    url: '/api/saofu-shop-card/camp/alipay/list',
-                    url: '/api/res.json',
-                    params: {}
-                })
+                axios.get('/topics')
                 .then(function(res) {
                     that.searchLock = false; // 解除锁定
 
                     if(res.data.success) {
-                        that.tableList = res.data;
+                        that.topicsList = res.data.data;
                     } else {
                         console.log(333);
                     }
@@ -89,5 +83,40 @@
             background: url('./images/bg.jpg') center center no-repeat;
         }
 
+    }
+    .cnode-sec {
+        margin: 0 auto;
+        width: 700px;
+        overflow: hidden;
+
+        p {
+            text-align: left;
+            span {
+                color: red;
+            }
+        }
+
+        @at-root .ul {
+            padding: 0 0 50px 0;
+            width: 700px;
+            height: auto;
+            list-style: none;
+
+            li {
+                height: 30px;
+                line-height: 30px;
+                text-align: left;
+                font-size: 14px;
+
+                a {
+                    color: green;
+                }
+
+                span {
+                    font-size: 13px;
+                    color: gray;
+                }
+            }
+        }
     }
 </style>

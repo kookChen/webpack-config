@@ -13,16 +13,17 @@ const isProduction = process.env.NODE_ENV === 'production'; // 判断是否生�
 module.exports = {
     // 入口
     entry: {
-        // app: path.join(__dirname, 'src/main.js'),
         app: './src/main.js',
-        vue:  ['vue', 'axios']
+        vue:  ['vue'],
+        axios: ['axios']
     },
 
     // 输出
     output: {
-        path: path.join(__dirname, './dist/'), // 打包时会自动生成dist（__dirname 是指你的项目根目录; path.join方法会正确的使用分隔符，在不同系统下正确输出）
+        // path: path.join(__dirname, './dist/'), // 打包时会自动生成dist（__dirname 是指你的项目根目录; path.join方法会正确的使用分隔符，在不同系统下正确输出）
         path: path.resolve(__dirname, './dist/'), // path.resolve方法是将相对路径转为绝对路径
-        filename: 'js/[name].[chunkhash].js', // 路径相对于output.path
+        filename: 'js/[name].js', // 路径相对于output.path
+        chunkFilename: 'js/common-[id].js',
         publicPath: '/' // 设置其它资源的根目录
     },
 
@@ -32,11 +33,12 @@ module.exports = {
             {
                 test: /\.css$/,
                 use: ExtractTextPlugin.extract({
+                    fallback: 'vue-style-loader',
                     use: {
                         loader: "css-loader",
                         options: {
-                            minimize: false,
-                            // sourceMap: isProduction
+                            minimize: true,
+                            sourceMap: false //isProduction
                         }
                     }
                 })
@@ -44,19 +46,19 @@ module.exports = {
             {
                 test: /\.scss$/,
                 use: ExtractTextPlugin.extract({
+                    fallback: 'vue-style-loader',
                     use: [
-                        // 'vue-style-loader',
                         {
                             loader: 'css-loader',
                             options: {
-                                minimize: false,
-                                // sourceMap: isProduction
+                                minimize: true,
+                                sourceMap: false //isProduction
                             }
                         },
                         {
                             loader: 'sass-loader',
                             options: {
-                                // sourceMap: isProduction
+                                sourceMap: false //isProduction
                             }
                         }
                     ]
@@ -71,7 +73,7 @@ module.exports = {
                 test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
                 loader: 'url-loader',
                 options: {
-                    limit: 10000,
+                    limit: 430000,
                     name: 'images/[name].[ext]'
                 }
             },
@@ -95,6 +97,14 @@ module.exports = {
     },
 
     plugins: [
+        // 提取公共js（在多入口时才有用）
+        new webpack.optimize.CommonsChunkPlugin({
+            name: ['common', 'vue', 'axios'],
+            // name: vue
+            // filename: 'vue.[hash].js',
+            minChunks: Infinity  //公共模块最小被引用的次数 (Infinity)
+        }),
+
         // 生成html文件
         new htmlWebpackPlugin({
             historyApiFallback: true,
@@ -111,15 +121,6 @@ module.exports = {
             chunksSortMode: 'dependency' // 按照不同文件的依赖关系来排序
         }),
 
-        // 提取公共js（是在有多个entry时使用的）
-        new webpack.optimize.CommonsChunkPlugin({
-            // names: ['vue', 'axios'],
-            // filename: ['vue.js', 'axios.js'],
-            name: 'vue',
-            filename: 'vue.[hash].js',
-            minChunks: Infinity  //公共模块最小被引用的次数
-        }),
-
         // 单独使用style标签加载css并设置其路径
         new ExtractTextPlugin({
             filename: 'css/[name].[contenthash].css' // 路径是相对于output.path
@@ -132,31 +133,31 @@ module.exports = {
             'src': path.join(__dirname, 'src'),
             'components': path.join(__dirname, 'src/components')
         }
-    },
-
-    devtool: isProduction ?  '#source-map' : false, // 生成sourceMap的总开关（如果这里设置为false，即使js、css都设为true也不会生成）
+    }
 
 }
 
 
 if (process.env.NODE_ENV === 'development') {
     module.exports.devServer = {
-        port: 333,
-        contentBase: './dist',
+        port: 333, // 不配置的话，默认端口为8080
+        contentBase: './dist', //
         publicPath: '/', // 这个设置最好是与output里面的publicPath设置成一样的，不然像图片资源的路径会不对
-        // proxy: {
-        //     '/api/*': {
-        //         target: 'http://new',
-        //         pathRewrite: {'^/api' : ''},
-        //         changeOrigin: true // 跨区域一定要设置这一条，不然没效果
-        //     }
-        // }
-    }
+
+        // 设置代理（下面设置的效果是：把http://localhost:333/api/res.json 设置 http://new/res.json）
+        proxy: {
+            '*': { // 设置为*，意思为匹配所有
+                target: 'https://cnodejs.org/api/v1', // api服务器的域名，这里用的cnode的域
+                // pathRewrite: {'^/api' : ''}, // 如果需要重写（或者说是替换）路径上的一些字符串的话，在这里配置，这里是把路径上的/api替换为空
+                changeOrigin: true // 跨域一定要设置这一条，不然没效果
+            }
+        }
+    };
 }
 
 
 if (isProduction) {
-    // module.exports.devtool = '#source-map';
+    module.exports.devtool = '#source-map'; // 生成sourceMap的总开关（如果这里设置为false，即使js、css的loader里面都设为true也不会生成）
 
     module.exports.plugins = (module.exports.plugins || []).concat([
         // new uglifyjsPlugin({
@@ -171,6 +172,7 @@ if (isProduction) {
         //     sourceMap: true, // 是否生成sourceMap
         // })
 
+        // 下面这个配置webpack自带的压缩配置，压缩的效果比上面的差一点点
         // new webpack.optimize.UglifyJsPlugin({
         //     compress: {
         //         warnings: false
