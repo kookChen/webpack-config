@@ -14,7 +14,7 @@
             <ul class="ul">
                 <li v-for="(item, index) in topicsList" v-if="index < 10">
                     <a :href="'https://cnodejs.org/topic/' + item.id" target="_blank">{{ item.title }}</a>
-                    <span> --- 作者是： {{ item.author.loginname }}</span>
+                    <span> --- 作者： {{ item.author.loginname }}</span>
                 </li>
             </ul>
         </div>
