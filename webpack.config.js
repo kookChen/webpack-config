@@ -9,6 +9,7 @@ const htmlWebpackPlugin = require('html-webpack-plugin'); // 这个插件是用�
 const ExtractTextPlugin = require('extract-text-webpack-plugin'); // 这个插件是用来提取独立的css的
 const uglifyjsPlugin = require('uglifyjs-webpack-plugin'); // 压缩JS
 const isProduction = process.env.NODE_ENV === 'production'; // 判断是否生产环境
+var q = 'q'
 
 module.exports = {
     // 入口
